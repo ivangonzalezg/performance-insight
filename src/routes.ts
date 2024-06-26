@@ -30,7 +30,7 @@ router.get("/sessions/:sessionId", async (req, res) => {
   );
   if (includeRequests) {
     metrics.requests = await db.all(
-      `SELECT * FROM requests WHERE session_id = ?`,
+      `SELECT method, url, status, timestamp FROM requests WHERE session_id = ?`,
       sessionId
     );
   }

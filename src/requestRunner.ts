@@ -61,14 +61,15 @@ export const runRequests = async (
             totalTime += elapsedTime;
 
             await db.run(
-              `INSERT INTO requests (session_id, method, url, headers, data, status, response) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              `INSERT INTO requests (session_id, method, url, headers, data, status, response, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)`,
               finalOptions.sessionId,
               finalOptions.method,
               finalOptions.url,
               JSON.stringify(finalOptions.headers),
               JSON.stringify(finalOptions.data),
               response.status,
-              JSON.stringify(response.data)
+              JSON.stringify(response.data),
+              new Date().toISOString()
             );
           } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

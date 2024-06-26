@@ -28,7 +28,7 @@ export async function initializeDb() {
       data TEXT,
       status INTEGER,
       response TEXT,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+      timestamp DATETIME
     )
   `);
   await db.exec(`
