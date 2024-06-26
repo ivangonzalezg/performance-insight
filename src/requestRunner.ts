@@ -6,7 +6,7 @@ export interface RequestOptions extends AxiosRequestConfig {
   iterations?: number;
   delay?: number;
   virtualUsers?: number;
-  duration?: number; // in seconds
+  duration?: number;
   sessionId?: string;
 }
 
@@ -21,7 +21,7 @@ const defaultOptions: Partial<RequestOptions> = {
   iterations: 1,
   delay: 0,
   virtualUsers: 1,
-  duration: 60, // 1 minute as default
+  duration: 60,
 };
 
 export const runRequests = async (
@@ -30,14 +30,15 @@ export const runRequests = async (
   const finalOptions = Object.assign({}, defaultOptions, options);
   finalOptions.sessionId = finalOptions.sessionId || uuidv4();
 
-  // Initialize session metrics
   const db = await openDb();
+  const startTime = new Date();
   await db.run(
-    `INSERT INTO session_metrics (session_id) VALUES (?)`,
-    finalOptions.sessionId
+    `INSERT INTO session_metrics (session_id, start_time, status) VALUES (?, ?, ?)`,
+    finalOptions.sessionId,
+    startTime,
+    "running"
   );
 
-  // Run the requests in the background
   setImmediate(async () => {
     const results: AxiosResponse[] = [];
     const errorResponses: AxiosResponse[] = [];
@@ -81,7 +82,6 @@ export const runRequests = async (
             );
           }
 
-          // Update session metrics in real-time
           const elapsedTime = (Date.now() - startTime) / 1000;
           const requestsPerSecond = totalRequests / elapsedTime;
           const averageResponseTime = totalRequests
@@ -107,6 +107,14 @@ export const runRequests = async (
     );
 
     await Promise.all(users);
+
+    const endTimeActual = new Date();
+    await db.run(
+      `UPDATE session_metrics SET end_time = ?, status = ? WHERE session_id = ?`,
+      endTimeActual,
+      "finished",
+      finalOptions.sessionId
+    );
   });
 
   return { sessionId: finalOptions.sessionId };

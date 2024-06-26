@@ -38,7 +38,10 @@ export async function initializeDb() {
       requests_per_second REAL DEFAULT 0,
       average_response_time REAL DEFAULT 0,
       error_percentage REAL DEFAULT 0,
-      total_time REAL DEFAULT 0
+      total_time REAL DEFAULT 0,
+      start_time DATETIME,
+      end_time DATETIME,
+      status TEXT
     )
   `);
 }

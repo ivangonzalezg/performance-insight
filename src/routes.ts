@@ -16,10 +16,12 @@ router.post("/run", async (req, res) => {
 
 router.get("/sessions", async (req, res) => {
   const db = await openDb();
-  const sessions = await db.all(
-    `SELECT DISTINCT session_id, url FROM requests`
-  );
-  res.json(sessions);
+  const sessions = await db.all(`SELECT DISTINCT session_id FROM requests`);
+  const sessionUrls = sessions.map((session) => ({
+    sessionId: session.session_id,
+    url: `/api/sessions/${session.session_id}`,
+  }));
+  res.json(sessionUrls);
 });
 
 router.get("/sessions/:sessionId", async (req, res) => {
