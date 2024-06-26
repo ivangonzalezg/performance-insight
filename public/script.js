@@ -27,6 +27,21 @@ document.addEventListener("DOMContentLoaded", () => {
           card.classList.add("running");
         }
 
+        const startTime = moment(session.start_time);
+        const endTime = session.end_time ? moment(session.end_time) : null;
+        let duration = "";
+        if (session.status === "completed" && endTime) {
+          duration = humanizeDuration(endTime.diff(startTime), {
+            largest: 2,
+            round: true,
+          });
+        } else if (session.status === "running") {
+          duration = humanizeDuration(moment().diff(startTime), {
+            largest: 2,
+            round: true,
+          });
+        }
+
         card.innerHTML = `
           <div class="card-header">
             <div>
@@ -40,12 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="card-body">
             <div>
-              <p><strong>Start Time:</strong> ${moment(
-                session.start_time
-              ).format("YYYY-MM-DD HH:mm:ss")}</p>
-              <p><strong>End Time:</strong> ${moment(session.end_time).format(
+              <p><strong>Start Time:</strong> ${startTime.format(
                 "YYYY-MM-DD HH:mm:ss"
               )}</p>
+              <p><strong>End Time:</strong> ${
+                endTime ? endTime.format("YYYY-MM-DD HH:mm:ss") : ""
+              }</p>
+              <p><strong>Duration:</strong> ${duration}</p>
             </div>
             <div>
               <p><strong>Total Requests:</strong> ${session.total_requests}</p>
