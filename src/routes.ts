@@ -16,9 +16,7 @@ router.post("/run", async (req, res) => {
 
 router.get("/sessions", async (req, res) => {
   const db = await openDb();
-  const sessions = await db.all(
-    `SELECT session_id, start_time, end_time, status FROM session_metrics`
-  );
+  const sessions = await db.all(`SELECT * FROM session_metrics`);
   res.json(sessions);
 });
 
@@ -30,18 +28,13 @@ router.get("/sessions/:sessionId", async (req, res) => {
     `SELECT * FROM session_metrics WHERE session_id = ?`,
     sessionId
   );
-  let requests = [];
   if (includeRequests) {
-    requests = await db.all(
+    metrics.requests = await db.all(
       `SELECT * FROM requests WHERE session_id = ?`,
       sessionId
     );
   }
-  res.json({
-    sessionId,
-    metrics,
-    requests: includeRequests ? requests : undefined,
-  });
+  res.json(metrics);
 });
 
 export default router;
