@@ -6,8 +6,6 @@ services:
       - "7891:7891"
     volumes:
       - data:/usr/src/app/data
-    environment:
-      - NODE_ENV=development
 
 volumes:
   data:
