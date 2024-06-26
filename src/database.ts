@@ -1,9 +1,17 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import path from "path";
+import fs from "fs";
+
+const dbFolder = path.resolve(__dirname, "../data");
+
+fs.mkdirSync(dbFolder, { recursive: true });
+
+const dbPath = path.resolve(dbFolder, "./database.db");
 
 export async function openDb() {
   return open({
-    filename: "./database.db",
+    filename: dbPath,
     driver: sqlite3.Database,
   });
 }

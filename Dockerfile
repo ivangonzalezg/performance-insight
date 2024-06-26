@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application.
 COPY . .
 
+# Create the data directory for the database
+RUN mkdir -p /usr/src/app/data
+
 # Expose the port the app runs on.
 EXPOSE 7891
 

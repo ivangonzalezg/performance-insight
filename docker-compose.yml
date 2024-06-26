@@ -5,7 +5,9 @@ services:
     ports:
       - "7891:7891"
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - data:/usr/src/app/data
     environment:
       - NODE_ENV=development
+
+volumes:
+  data:
