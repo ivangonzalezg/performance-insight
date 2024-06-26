@@ -16,7 +16,9 @@ router.post("/run", async (req, res) => {
 
 router.get("/sessions", async (req, res) => {
   const db = await openDb();
-  const sessions = await db.all(`SELECT * FROM session_metrics`);
+  const sessions = await db.all(
+    `SELECT * FROM session_metrics ORDER BY start_time DESC`
+  );
   res.json(sessions);
 });
 

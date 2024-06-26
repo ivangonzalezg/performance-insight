@@ -44,4 +44,9 @@ export async function initializeDb() {
       status TEXT
     )
   `);
+  await db.run(
+    `UPDATE session_metrics SET status = ? WHERE status != ?`,
+    "completed",
+    "completed"
+  );
 }

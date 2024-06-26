@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+h1,
+h2 {
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 10px;
+}
+
+input,
+select,
+button,
+textarea {
+  margin-top: 5px;
+  padding: 8px;
+  font-size: 1em;
+}
+
+button {
+  margin-top: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: rgba(144, 239, 145, 0.25);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card.running {
+  background-color: rgba(135, 206, 250, 0.25);
+}
+
+.card h3 {
+  margin: 0;
+}
+
+.card p {
+  margin: 5px 0;
+}
+
+.card .card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card .card-header div {
+  display: flex;
+  flex-direction: column;
+}
+
+.card .card-body {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.card .card-body div {
+  flex: 1;
+  min-width: 150px;
+}
