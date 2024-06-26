@@ -8,7 +8,7 @@ router.post("/run", async (req, res) => {
   const options: RequestOptions = req.body;
   try {
     const { sessionId } = await runRequests(options);
-    res.json({ sessionId, url: `/api/sessions/${sessionId}` });
+    res.json({ sessionId });
   } catch (error: any) {
     res.status(500).send(error.message);
   }
@@ -16,25 +16,23 @@ router.post("/run", async (req, res) => {
 
 router.get("/sessions", async (req, res) => {
   const db = await openDb();
-  const sessions = await db.all(`SELECT DISTINCT session_id FROM requests`);
-  const sessionUrls = sessions.map((session) => ({
-    sessionId: session.session_id,
-    url: `/api/sessions/${session.session_id}`,
-  }));
-  res.json(sessionUrls);
+  const sessions = await db.all(
+    `SELECT session_id, start_time, end_time, status FROM session_metrics`
+  );
+  res.json(sessions);
 });
 
 router.get("/sessions/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
-  const { requests } = req.query;
+  const includeRequests = req.query?.requests === "true";
   const db = await openDb();
   const metrics = await db.get(
     `SELECT * FROM session_metrics WHERE session_id = ?`,
     sessionId
   );
-  let _requests = [];
-  if (requests === "true") {
-    _requests = await db.all(
+  let requests = [];
+  if (includeRequests) {
+    requests = await db.all(
       `SELECT * FROM requests WHERE session_id = ?`,
       sessionId
     );
@@ -42,7 +40,7 @@ router.get("/sessions/:sessionId", async (req, res) => {
   res.json({
     sessionId,
     metrics,
-    requests,
+    requests: includeRequests ? requests : undefined,
   });
 });
 

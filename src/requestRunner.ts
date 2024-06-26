@@ -31,7 +31,7 @@ export const runRequests = async (
   finalOptions.sessionId = finalOptions.sessionId || uuidv4();
 
   const db = await openDb();
-  const startTime = new Date();
+  const startTime = new Date().toISOString();
   await db.run(
     `INSERT INTO session_metrics (session_id, start_time, status) VALUES (?, ?, ?)`,
     finalOptions.sessionId,
@@ -108,7 +108,7 @@ export const runRequests = async (
 
     await Promise.all(users);
 
-    const endTimeActual = new Date();
+    const endTimeActual = new Date().toISOString();
     await db.run(
       `UPDATE session_metrics SET end_time = ?, status = ? WHERE session_id = ?`,
       endTimeActual,
