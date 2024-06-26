@@ -1,6 +1,12 @@
 # Use the official Node.js image.
 FROM node:18-alpine
 
+# Set the timezone environment variable
+ENV TZ=America/Bogota
+
+# Install tzdata package to set timezone
+RUN apt-get update && apt-get install -y tzdata
+
 # Create and change to the app directory.
 WORKDIR /usr/src/app
 
