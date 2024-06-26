@@ -61,7 +61,7 @@ export const runRequests = async (
             totalTime += elapsedTime;
 
             await db.run(
-              `INSERT INTO requests (session_id, method, url, headers, data, status, response, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              `INSERT INTO requests (session_id, method, url, headers, data, status, response, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
               finalOptions.sessionId,
               finalOptions.method,
               finalOptions.url,
@@ -71,10 +71,19 @@ export const runRequests = async (
               JSON.stringify(response.data),
               new Date().toISOString()
             );
-          } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-              errorResponses.push(error.response);
-            }
+          } catch (error: any) {
+            errorResponses.push(error);
+            await db.run(
+              `INSERT INTO requests (session_id, method, url, headers, data, status, response, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+              finalOptions.sessionId,
+              error.config.method,
+              error.config.url,
+              JSON.stringify(error.config.headers),
+              JSON.stringify(error.config.data),
+              error?.response?.status || 404,
+              JSON.stringify(error?.response?.data),
+              new Date().toISOString()
+            );
           }
           totalRequests++;
           if (finalOptions.delay! > 0) {
@@ -113,7 +122,7 @@ export const runRequests = async (
     await db.run(
       `UPDATE session_metrics SET end_time = ?, status = ? WHERE session_id = ?`,
       endTimeActual,
-      "finished",
+      "completed",
       finalOptions.sessionId
     );
   });

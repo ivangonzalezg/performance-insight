@@ -24,17 +24,18 @@ router.get("/sessions/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
   const includeRequests = req.query?.requests === "true";
   const db = await openDb();
-  const metrics = await db.get(
+  let metrics = await db.get(
     `SELECT * FROM session_metrics WHERE session_id = ?`,
     sessionId
   );
-  if (includeRequests) {
+  if (includeRequests && metrics) {
+    metrics = { ...metrics };
     metrics.requests = await db.all(
       `SELECT method, url, status, timestamp FROM requests WHERE session_id = ?`,
       sessionId
     );
   }
-  res.json(metrics);
+  res.json(metrics || {});
 });
 
 export default router;
