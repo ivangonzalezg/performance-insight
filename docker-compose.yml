@@ -1,0 +1,11 @@
+services:
+  performance-insight:
+    container_name: performance-insight
+    build: .
+    ports:
+      - "7891:7891"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
